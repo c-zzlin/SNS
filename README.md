@@ -166,7 +166,7 @@
     }
     
 11.申请添加好友  /friend/add
-    
+    1
     {
         "user_id":"自己的ID"
         "friend_id":"添加人的ID"
@@ -174,6 +174,20 @@
     
     push信息过去，不在线考虑新建张表存储
 
+    2. 查看好友申请 /friend/commit
+    {
+        "user_id":
+    }
+    
+    {
+        "user_id":,
+        "user_aiais":,
+        "user_sex":,
+        ...
+    }
+
+    
+    
 12.确认通过添加好友  /friend/confirm
     
     {
@@ -194,5 +208,12 @@
 
 
 
-
+统一下返回数据格式
+    {
+        code:200,
+        msg:"success",
+        data:{
+            
+        }
+    }
 
