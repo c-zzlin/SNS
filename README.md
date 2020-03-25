@@ -17,7 +17,7 @@
 
 | 参数名 | 类型 |
 | ------ | ------ |
-| userid | char(11) |
+| user_id | char(11) |
 | user_aiais | varchar | 
 | user_image | varchar |
 
@@ -129,14 +129,30 @@
     
     返回
     {
-        [
-            {
-                "user_id":"",
-                "user_image":"url",
-                "user_aiais":"clim",
-            }
+    "code":200,
+    "msg":"success",
+    "data":{
+      "friend":[
+        {
+        		    "user":
+        			{"user_aiais": "ggg",
+        			"user_image": "/static/img/2.jpg",
+        			"user_id": 1608030150,
+              "user_sex":1,
+              "user_info": "fuck"
+              }
+        },
+        {
+        		  "user":
+        			{"user_aiais": "ccc",
+        			"user_image": "/static/img/3.jpg",
+        			"user_id": 1608030151,
+              "user_sex":2,
+              "user_info": "fuck2"
+              }
+        }
         ]
-    }
+  }}
 
 9.删除好友      /friend/delete
     
@@ -157,13 +173,7 @@
     }
     
     返回
-    {
-        [
-            “user_id”:"123",
-            "user_image":"url",
-            "user_aiais":"clim"
-        ]
-    }
+    同8 /friend/list
     
 11.申请添加好友  /friend/add
     1
@@ -179,20 +189,15 @@
         "user_id":
     }
     
-    {
-        "user_id":,
-        "user_aiais":,
-        "user_sex":,
-        ...
-    }
+     返回同8 /friend/list
 
     
     
 12.确认通过添加好友  /friend/confirm
     
     {
-        id:
-        is_confirm?     这里应该建多张表，申请时生成一个ID，接收PUSH时存放ID，确认时根据ID确认
+          "user_id":"自己的ID"
+        "friend_id":"添加人的ID"    这里应该建多张表，申请时生成一个ID，接收PUSH时存放ID，确认时根据ID确认
     }                   //后台应该：1.添加好友，关注表互相增加
                                     2.更新A与B的  时间表
     
