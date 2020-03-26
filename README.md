@@ -68,14 +68,16 @@
               user_aiais:"clim",
               msg_content:"xczxcasfasf",
               "msg_id":"123",
+              create_time:12-12 17:17,
               "is_own":1,
               img_group:[
                 img_url:"1",
                 img_url:"2",
                 img_url:"3"
               ],
+              is_like:0       //是否点赞
               like:"111"                //后台计算
-              comment:"123"             //后台计算  ，共同好友总数
+              comment:"123"             //后台计算  ，共同好友总数,考虑建张快照表，每添加一个评论&回复就加一条数据
             },
         ]
     }
@@ -211,8 +213,30 @@
 
 17.长连接 /socket/connnect
 
+18.查询评论 /comment/search
 
+    请求参数
+    {
+    "user_id":123,
+    "msg_id":456
+    }
+    
+    返回数据
+    {
+        
+    }
 
+20.添加评论 /comment/insert
+    
+    请求参数
+    {
+        content:123,
+         user_id:123,
+        msg_id:123,
+    }
+    
+    返回success
+    
 统一下返回数据格式
     {
         code:200,
