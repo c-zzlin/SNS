@@ -237,6 +237,27 @@
     
     返回success
     
+21.回复评论 /reply/insert
+
+    请求参数
+    {
+        msg_id:123,
+        reply_id:123,
+        user_id:123,
+        content:123,
+        comment_id:123
+    }
+
+22.子回复 /reply/child_insert
+    
+    请求参数
+    {
+        msg_id:123,
+        reply_id:123,
+        user_id:123,
+        content:asda,
+        comment_id:123
+    }
 统一下返回数据格式
     {
         code:200,
