@@ -1,0 +1,42 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8764
+spring:
+  application:
+    name: sns-provider-test
+  redis:
+    #数据库索引
+    database: 2
+    host: 127.0.0.1
+    port: 6379
+    password:
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+    timeout: 300s
+  datasource:
+    url: jdbc:mysql://localhost:3306/sns?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+    username: root
+    password: 1234
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.jdbc.Driver
+  devtools:
+    restart:
+      enabled: true  #设置开启热部署
+      additional-paths: src/main/java #重启目录
+      exclude: WEB-INF/**
+  zipkin:
+    base:
+      url: http://localhost:9411
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  typeAliasesPackage: com.clim.test.entity
+logging:
+  path: /Users/clim/IdeaProjects/sns
+  file: springbootdemo.log
