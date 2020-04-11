@@ -3673,3 +3673,4 @@ java.lang.IllegalStateException: Shutdown in progress
 2020-04-11 19:28:15.926  INFO [sns-provider-test,66f9ff5bc7ec2c1f,9e95345c473a55bf,false] 4226 --- [http-nio-8764-exec-9] com.clim.test.Controller.TestController  : test-user1
 2020-04-11 19:29:19.811  INFO [sns-provider-test,,,] 4226 --- [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2020-04-11 19:34:19.817  INFO [sns-provider-test,,,] 4226 --- [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2020-04-11 19:39:19.822  INFO [sns-provider-test,,,] 4226 --- [AsyncResolver-bootstrap-executor-0] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
