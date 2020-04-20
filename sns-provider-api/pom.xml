@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>sns-provider-api-user</module>
+        <module>sns-provider-api-im</module>
     </modules>
 
     <properties>

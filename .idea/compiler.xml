@@ -6,13 +6,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="sns-geteway" />
-        <module name="eureka" />
         <module name="sns-provider-user" />
-        <module name="sns-provider-api-user" />
-        <module name="sns-common-util" />
         <module name="sns-provider-test" />
+        <module name="sns-provider-im" />
+        <module name="sns-provider-comment" />
+        <module name="sns-provider-api-im" />
         <module name="sns-zipkin" />
+        <module name="sns-geteway" />
+        <module name="sns-provider-api-user" />
+        <module name="sns-provider-like" />
+        <module name="sns-provider-friend" />
+        <module name="eureka" />
+        <module name="sns-provider-blog" />
+        <module name="sns-common-util" />
+        <module name="sns-provider-chat" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -28,7 +35,14 @@
       <module name="sns-geteway" options="-parameters" />
       <module name="sns-provider" options="-parameters" />
       <module name="sns-provider-api" options="-parameters" />
+      <module name="sns-provider-api-im" options="-parameters" />
       <module name="sns-provider-api-user" options="-parameters" />
+      <module name="sns-provider-blog" options="-parameters" />
+      <module name="sns-provider-chat" options="-parameters" />
+      <module name="sns-provider-comment" options="-parameters" />
+      <module name="sns-provider-friend" options="-parameters" />
+      <module name="sns-provider-im" options="-parameters" />
+      <module name="sns-provider-like" options="-parameters" />
       <module name="sns-provider-test" options="-parameters" />
       <module name="sns-provider-user" options="-parameters" />
       <module name="sns-zipkin" options="-parameters" />

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clim.blog.dao.BlogDao">
+    <insert id="insert_img">
+     insert into friend_circle_img(msg_id,img_url,img_order)
+     values
+        <foreach collection ="list" item="item" index= "index" separator =",">
+          (
+          #{item.msg_id},
+          #{item.img_url},
+          #{item.img_order}
+          )
+        </foreach>
+     </insert>
+
+    <insert id="send">
+        insert into friend_circle_message(msg_id,user_id,msg_content)
+        values (#{msg_id}, #{user_id}, #{content})
+    </insert>
+
+    <insert id="insert_timeline">
+        insert into friend_circle_timeline(msg_id,user_id,is_own)
+        values (#{msg_id}, #{user_id}, #{is_own})
+    </insert>
+
+    <insert id="insert_friend_timeline">
+         insert into friend_circle_timeline(msg_id,user_id,is_own)
+        values
+        <foreach collection ="list" item="item" index= "index" separator =",">
+            (
+            #{item.msg_id},
+            #{item.user_id},
+            1
+            )
+        </foreach>
+    </insert>
+    <select id="find_all_friend" resultType="String">
+        select atten_id from useratten
+        where user_id = #{user_id}
+        and status = 2
+    </select>
+
+    <select id="find_all_msgId" resultType="String">
+        select msg_id from friend_circle_timeline
+        where user_id = #{user_id}
+        ORDER BY create_time desc
+ LIMIT 0,10
+    </select>
+
+
+    <select id="find_blog" resultMap="find_blog_map">
+        select b.msg_id,a.user_id,a.user_aiais,a.user_image ,b.msg_content,b.create_time
+from user a,friend_circle_message b
+where  b.user_id =a.user_id and b.msg_id in
+        <foreach collection="list" index="index" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY b.create_time DESC
+    </select>
+
+
+
+    <resultMap id="find_blog_map" type="com.clim.blog.model.vo.BlogVo">
+        <id property="msg_id" column="msg_id"/>
+        <result property="user_id" column="user_id"/>
+        <result property="user_image" column="user_image"/>
+        <result property="user_aiais" column="user_aiais"/>
+        <result property="msg_content" column="msg_content"/>
+        <result property="create_time" column="create_time"/>
+        <collection property="img_group" javaType="ArrayList" column="msg_id" ofType="com.clim.blog.model.vo.ImgGroup"
+                    select="find_imgGroup">
+            <result property="img_url" column="img_url"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="find_imgGroup" resultType="com.clim.blog.model.vo.ImgGroup">
+        select img_url from friend_circle_img
+        where msg_id = #{msg_id}
+    </select>
+
+
+
+    <resultMap id="find_blog_like"  type="com.clim.blog.model.entity.BlogLike">
+        <id property="msg_id" column="msg_id"></id>
+        <collection property="user_id" javaType="ArrayList" column="msg_id" ofType="java.lang.String"
+                    select="find_like_user_id">
+            <result property="user_id" column="user_id"/>
+        </collection>
+    </resultMap>
+    <select id="find_all_like" resultMap="find_blog_like">
+            select msg_id from friend_circle_like
+            group by msg_id having msg_id in
+        <foreach collection="list" index="index" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY msg_id+0 DESC
+    </select>
+
+    <select id="find_like_user_id" resultType="java.lang.String">
+        select user_id from friend_circle_like
+        where msg_id =#{msg_id}
+    </select>
+
+
+    <select id="find_all_comment" resultType="com.clim.blog.model.entity.CommentId">
+         select msg_id,user_id from friend_circle_comment
+ where msg_id in
+        <foreach collection="list" index="index" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+ ORDER BY msg_id+0 DESC
+    </select>
+    <select id="find_all_reply" resultType="com.clim.blog.model.entity.ReplyId">
+        select msg_id,reply_id,user_id from friend_circle_reply
+        where msg_id in
+        <foreach collection="list" index="index" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY msg_id+0 DESC
+    </select>
+
+    <insert id="like">
+        insert into friend_circle_like(msg_id,user_id)
+        values (#{msg_id},#{user_id})
+    </insert>
+    <insert id="cancel_like">
+        delete from friend_circle_like
+        where msg_id = #{msg_id} and user_id = #{user_id}
+    </insert>
+</mapper>

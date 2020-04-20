@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clim.comment.dao.CommentDao">
+    <select id="list" resultMap="find_comment_list">
+select a.user_id,a.user_aiais,a.user_image,b.comment_id,b.content,b.create_time
+from user a,friend_circle_comment b
+where a.user_id = b.user_id and b.msg_id =#{msg_id}
+    </select>
+    <resultMap id="find_comment_list" type="com.clim.comment.model.vo.CommentVo">
+        <id property="comment_id" column="comment_id"/>
+        <result property="user_id" column="user_id"/>
+        <result property="user_image" column="user_image"/>
+        <result property="user_aiais" column="user_aiais"/>
+        <result property="content" column="content"/>
+        <result property="create_time" column="create_time"/>
+        <collection property="list" javaType="ArrayList" column="comment_id" ofType="com.clim.comment.model.vo.ReplyVo"
+                    select="find_reply_list">
+            <result property="reply_id" column="reply_id"/>
+            <result property="content" column="content"/>
+            <result property="user_id" column="user_id"/>
+            <result property="user_aiais" column="user_aiais"/>
+            <result property="comment_id" column="comment_id"/>
+            <result property="create_time" column="create_time"/>
+        </collection>
+    </resultMap>
+
+    <select id="find_reply_list" resultType="com.clim.comment.model.vo.ReplyVo">
+        select a.reply_id,a.content,a.comment_id,a.create_time,b.user_id,b.user_aiais
+from friend_circle_reply a,user b
+where a.user_id = b.user_id and a.comment_id = #{comment_id}
+    </select>
+
+    <select id="query_friend_list" resultType="String">
+        select atten_id from useratten
+        where user_id = #{user_id} and status =2
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="comment_id" parameterType="com.clim.comment.model.entity.CommentBean">
+        insert into friend_circle_comment(msg_id, user_id, content)
+        values (#{msg_id}, #{user_id}, #{content})
+    </insert>
+
+    <insert id="reply" useGeneratedKeys="true" keyProperty="reply_id" parameterType="com.clim.comment.model.entity.ReplyBean">
+        insert into friend_circle_reply(comment_id,user_id,content, msg_id,reply_id)
+        values (#{comment_id}, #{user_id}, #{content},#{msg_id},#{reply_id})
+    </insert>
+</mapper>

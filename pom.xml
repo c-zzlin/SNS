@@ -22,6 +22,8 @@
         <module>sns-provider-api</module>
         <module>sns-provider-test</module>
         <module>sns-common</module>
+        <module>sns-provider-blog</module>
+        <module>sns-provider-like</module>
     </modules>
 
 </project>

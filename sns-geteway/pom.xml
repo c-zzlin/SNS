@@ -20,6 +20,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.clim.sns</groupId>
+            <artifactId>sns-common-util</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>

@@ -15,6 +15,12 @@
     <modules>
         <module>sns-provider-user</module>
         <module>sns-provider-test</module>
+        <module>sns-provider-friend</module>
+        <module>sns-provider-blog</module>
+        <module>sns-provider-like</module>
+        <module>sns-provider-comment</module>
+        <module>sns-provider-im</module>
+        <module>sns-provider-chat</module>
     </modules>
 
     <properties>
@@ -23,6 +29,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.clim.sns</groupId>
+            <artifactId>sns-common-util</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>

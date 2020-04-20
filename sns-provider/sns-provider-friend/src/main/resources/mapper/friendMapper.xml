@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clim.friend.dao.FriendDao">
+    <select id="getFriendList" resultType="com.clim.friend.model.vo.FriendListVo">
+        select user_id,user_aiais,user_sex,user_image,user_info
+        from user where user_id
+                in(select atten_id from useratten where user_id = #{user_id} and status=2
+                order by create_time DESC)
+
+    </select>
+
+    <select id="find" resultType="com.clim.friend.model.vo.FriendListVo">
+        select user_id,user_aiais,user_sex,user_image,user_info
+        from user where user_aiais like CONCAT('%',#{user_aiais},'%')
+        and user_id not in (select atten_id from useratten where user_id =#{user_id})
+    </select>
+
+    <insert id="add">
+        insert into useratten(user_id, atten_id, status, offline)
+        values(#{user_id}, #{friend_id}, #{status}, #{offline})
+    </insert>
+
+    <select id="commit" resultType="com.clim.friend.model.vo.FriendListVo">
+        select user_id,user_aiais,user_sex,user_image,user_info
+        from user where user_id in (
+            select user_id from useratten where atten_id =#{user_id} and status=1
+            order by create_time DESC
+        )
+    </select>
+
+    <select id="unread" resultType="Integer">
+        select count(user_id) from useratten
+         where atten_id = #{user_id} and status = 1
+    </select>
+    <update id="confirm">
+        update useratten set status = 2
+         where user_id=#{friend_id} and atten_id = #{user_id}
+    </update>
+    <delete id="delete">
+        delete from useratten where
+        (user_id = #{user_id} and atten_id = #{friend_id}) or
+        (user_id = #{friend_id} and atten_id = #{user_id})
+
+    </delete>
+
+    <select id="friend_timeline_list" resultType="String">
+        select msg_id from friend_circle_message
+        where user_id = #{user_id}
+    </select>
+
+    <insert id="insert_friend_timeline">
+        insert into friend_circle_timeline(msg_id,user_id,is_own) values
+        <foreach collection ="list" item="item" index= "index" separator =",">
+            (
+            #{item.msg_id},
+            #{item.user_id},
+            1
+            )
+        </foreach>
+    </insert>
+
+    <delete id="delete_All_timeline">
+        delete from friend_circle_timeline
+        where user_id = #{user_id} and msg_id in
+        <foreach collection="list" index="index" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

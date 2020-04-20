@@ -58,7 +58,10 @@
     user_id:"123456"
     }
 
-    返回参数：
+    返回参数：   查询好友列表，查timeline表，
+    根据msg_id查user_id 跟图片，
+    点赞表查出所有user_id，跟好友列表进行去重，并判断自身是否点赞
+    查出评论表\回复表user_id，去重，统计
     
     {
         [
@@ -133,26 +136,24 @@
     {
     "code":200,
     "msg":"success",
-    "data":{
-      "friend":[
-        {
-        		    "user":
+    "data":{[
+    
         			{"user_aiais": "ggg",
         			"user_image": "/static/img/2.jpg",
         			"user_id": 1608030150,
               "user_sex":1,
               "user_info": "fuck"
               }
-        },
-        {
-        		  "user":
+        ,
+        
+        		  
         			{"user_aiais": "ccc",
         			"user_image": "/static/img/3.jpg",
         			"user_id": 1608030151,
               "user_sex":2,
               "user_info": "fuck2"
               }
-        }
+        
         ]
   }}
 
@@ -168,7 +169,7 @@
     }
     
     
-10.搜索查找好友  /user/find
+10.搜索查找好友  /friend/find
 
     {
         "user_aiais"                //根据昵称查询
@@ -296,29 +297,20 @@
     
     返回
     {
-        "data":{
-      "friend":[
-        {
-        	"user":
-        		{
-        			"user_aiais": "ggg",
-        			"user_image": "/static/img/2.jpg",
-        			"user_id": 1608030150,
-                    "user_sex":1,
-                    "user_info": "fuck"
-              }
-        },
-        {
-        	"user":
-        		{
-        			"user_aiais": "ccc",
-        			"user_image": "/static/img/3.jpg",
-        			"user_id": 1608030151,
-                    "user_sex":2,
-                    "user_info": "fuck2"
-              }
-        }
-        ]
+        ""code":200,
+             "msg":"success",
+             "data":[
+             {
+               "user":
+               {"user_aiais":"ggg",
+                 "user_image":"/static/img/2.jpg",
+                 "user_id":1608030150},
+               "lastMsg":{
+                 "datetime":"12-11",
+                 "content":"fuck"
+               },
+               "sum":1
+             }]
     }
 
     

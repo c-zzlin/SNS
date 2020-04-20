@@ -7,12 +7,47 @@ server:
 spring:
   application:
     name: sns-getway
+  redis:
+    #数据库索引
+    database: 2
+    host: 127.0.0.1
+    port: 6379
+    password:
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+    timeout: 300s
 zuul:
   routes:
-    api-a:
-      path: /api-a/**
-      serviceId: sns-provider-user
     sns-provider-user:
       path: /user/**
-      serviceId: sns-provider-test
+      serviceId: sns-provider-user
       strip-prefix: false
+    api-b:
+      path: /api-b/**
+      serviceId: sns-provider-test
+    sns-provider-friend:
+      path: /friend/**
+      serviceId: sns-provider-friend
+      strip-prefix: false
+    sns-provider-chat:
+      path: /chat/**
+      serviceId: sns-provider-chat
+      strip-prefix: false
+    sns-provider-blog:
+      path: /blog/**
+      serviceId: sns-provider-blog
+      strip-prefix: false
+    sns-provider-comment:
+      path: /comment/**
+      serviceId: sns-provider-comment
+      strip-prefix: false
+  host:
+    connect-timeout-millis: 3000
+    socket-timeout-millis: 3000
+ribbon:
+  eureka:
+    enabled: true
