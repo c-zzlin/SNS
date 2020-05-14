@@ -44,7 +44,8 @@ public class CommentServiceImpl implements CommentService {
                 addComDto.getUser_id(),
                 addComDto.getMsg_id());
          commentDao.insert(commentBean);
-         if(stringRedisTemplate.hasKey("WSmain:"+addComDto.getFriend_id())){
+         if(!addComDto.getFriend_id().equals(addComDto.getUser_id()) &&
+                 stringRedisTemplate.hasKey("WSmain:"+addComDto.getFriend_id())){
              wsPushApi.friendPush(addComDto.getFriend_id(),
                      "content");
          }

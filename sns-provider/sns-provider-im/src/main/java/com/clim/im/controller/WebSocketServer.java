@@ -92,20 +92,10 @@ public class WebSocketServer {
     public void onMessage(String data, Session session) {
         log.info("来自客户端的消息：{}");
         log.info(data);
-       /* SendMessage(session, "收到消息，消息内容："+message);*/
-        /* JSONObject messageJson = JSONObject.parseObject(data);
-       JSONObject message = messageJson.optJSONObject("message");
-        String to = message.optString("to");
-        String from = message.optString("from");
-        String content=message.optString("content");*/
+
         SendMsg sendMsg = JSON.parseObject(data, SendMsg.class);
         log.info(sendMsg.toString());
-        try{
-           /* sendMessage(content,to,from);*/
-            /* sendMessage(message,onlineUserMap.values());//消息发回给客户端
-             */        }catch(Exception e){
-            e.printStackTrace();
-        }
+
     }
 
     /**

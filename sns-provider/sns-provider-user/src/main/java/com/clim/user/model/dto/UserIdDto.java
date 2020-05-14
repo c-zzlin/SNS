@@ -1,4 +1,4 @@
-package com.clim.friend.model.dto;
+package com.clim.user.model.dto;
 
 public class UserIdDto {
     private String user_id;

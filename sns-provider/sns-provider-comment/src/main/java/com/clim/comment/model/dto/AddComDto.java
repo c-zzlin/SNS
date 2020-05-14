@@ -46,4 +46,14 @@ public class AddComDto {
     public void setMsg_id(String msg_id) {
         this.msg_id = msg_id;
     }
+
+    @Override
+    public String toString() {
+        return "AddComDto{" +
+                "content='" + content + '\'' +
+                ", user_id='" + user_id + '\'' +
+                ", msg_id='" + msg_id + '\'' +
+                ", friend_id='" + friend_id + '\'' +
+                '}';
+    }
 }

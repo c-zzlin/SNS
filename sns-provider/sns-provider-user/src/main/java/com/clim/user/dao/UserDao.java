@@ -14,4 +14,8 @@ public interface UserDao {
      */
     public User login(@Param("user_logon")String user_logon,
                       @Param("user_password")String user_password);
+
+    public int like_count(@Param("user_id")String user_id);
+    public int friend_count(@Param("user_id")String user_id);
+    public int msg_count(@Param("user_id")String user_id);
 }

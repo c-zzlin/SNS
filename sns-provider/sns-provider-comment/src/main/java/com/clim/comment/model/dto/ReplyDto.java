@@ -48,4 +48,12 @@ public class ReplyDto {
     public void setComment_id(BigInteger comment_id) {
         this.comment_id = comment_id;
     }
+
+    public ReplyDto(String msg_id, String reply_id, String user_id, String content, BigInteger comment_id) {
+        this.msg_id = msg_id;
+        this.reply_id = reply_id;
+        this.user_id = user_id;
+        this.content = content;
+        this.comment_id = comment_id;
+    }
 }

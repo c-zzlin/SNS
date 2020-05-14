@@ -7,14 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="sns-provider-user" />
-        <module name="sns-provider-test" />
         <module name="sns-provider-im" />
         <module name="sns-provider-comment" />
         <module name="sns-provider-api-im" />
         <module name="sns-zipkin" />
         <module name="sns-geteway" />
         <module name="sns-provider-api-user" />
-        <module name="sns-provider-like" />
         <module name="sns-provider-friend" />
         <module name="eureka" />
         <module name="sns-provider-blog" />
@@ -23,6 +21,8 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="sns-provider-like" target="1.8" />
+      <module name="sns-provider-test" target="1.8" />
       <module name="sns-zipkin" target="1.8" />
     </bytecodeTargetLevel>
   </component>

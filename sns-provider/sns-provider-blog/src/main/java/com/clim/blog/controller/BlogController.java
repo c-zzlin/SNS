@@ -1,13 +1,16 @@
 package com.clim.blog.controller;
 
+import com.clim.blog.exception.BlogException;
 import com.clim.blog.model.dto.LikeDto;
 import com.clim.blog.model.dto.MsgDto;
 import com.clim.blog.model.dto.UserIdDto;
 import com.clim.blog.model.entity.Blog;
 import com.clim.blog.model.entity.BlogLike;
 import com.clim.blog.model.entity.FriendCircleImg;
+import com.clim.blog.model.vo.BlogVo;
 import com.clim.blog.service.BlogService;
 import com.clim.blog.util.DateUtil;
+import com.clim.common.enums.ErrorCodeEnum;
 import com.clim.common.model.Result;
 import com.clim.common.util.ResultUtil;
 import org.slf4j.Logger;
@@ -31,6 +34,7 @@ public class BlogController {
     @Autowired
     private BlogService blogService;
 
+
     @RequestMapping(value = "/upload")
     public Map<String, String> importDetailDataExcel(@RequestParam("file") MultipartFile[] file)
             throws RuntimeException, IOException {
@@ -38,7 +42,10 @@ public class BlogController {
         List<FriendCircleImg> list=new ArrayList<>();
         String image = DateUtil.getDate();
         String msg_id = blogService.getKey();   //生成ID
-        logger.info("====id为： "+msg_id);
+        if(msg_id == null){
+            throw new BlogException(ErrorCodeEnum.BLOG1000002);
+        }
+        logger.info("上传图片，生产的id为： "+msg_id);
         if(file.length>0){
             for(int i=0;i<file.length;i++){
                 if (!file[i].isEmpty()) {
@@ -68,6 +75,7 @@ public class BlogController {
 
     @RequestMapping("/send")
     public Result<Integer> send(@RequestBody MsgDto msgDto){
+        logger.info("/blog/send-发送动态msgDto集合，msgDto={}",msgDto);
         return ResultUtil.success(
                 blogService.send(msgDto)
         );
@@ -77,7 +85,8 @@ public class BlogController {
      * 查询所有动态
      */
     @RequestMapping("/search")
-    public Result<List<Blog>> search(@RequestBody UserIdDto userIdDto){
+    public Result<List<BlogVo>> search(@RequestBody UserIdDto userIdDto){
+        logger.info("查询动态，参数为：userIdDto={}",userIdDto);
         return ResultUtil.success(
                 blogService.search_blog(userIdDto.getUser_id())
         );
@@ -85,15 +94,10 @@ public class BlogController {
 
     @RequestMapping("/like")
     public Result like(@RequestBody LikeDto likeDto){
+        logger.info("点赞-likeDto集合，likeDto={}", likeDto);
             blogService.like(likeDto);
             return ResultUtil.success();
     }
 
 
-    @RequestMapping("/test")
-    public Result<List<BlogLike>> test(@RequestBody UserIdDto userIdDto){
-        return ResultUtil.success(
-                blogService.test(userIdDto.getUser_id())
-        );
-    }
 }

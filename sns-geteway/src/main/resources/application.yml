@@ -46,8 +46,8 @@ zuul:
       serviceId: sns-provider-comment
       strip-prefix: false
   host:
-    connect-timeout-millis: 3000
-    socket-timeout-millis: 3000
+    connect-timeout-millis: 15000 #HTTP连接超时要比Hystrix的大
+    socket-timeout-millis: 60000   #socket超时
 ribbon:
-  eureka:
-    enabled: true
+  ReadTimeout: 10000
+  ConnectTimeout: 10000

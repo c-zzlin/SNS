@@ -33,6 +33,3 @@ spring:
 mybatis:
   mapperLocations: classpath:mapper/*.xml
   typeAliasesPackage: com.clim.blog.model.entity
-logging:
-  path: /Users/clim/IdeaProjects/sns
-  file: springbootdemo.log

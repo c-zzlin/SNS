@@ -14,7 +14,7 @@ public interface BlogService {
     public int insert_img(List<FriendCircleImg> list);
     public String getKey();
     public int send(MsgDto msgDto);
+    public void insert_timeline(MsgDto msgDto);
     public List<BlogVo> search_blog(String user_id);
-    public List<BlogLike> test(String user_id);
     public void like(LikeDto likeDto);
 }

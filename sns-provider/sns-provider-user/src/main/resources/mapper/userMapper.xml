@@ -5,4 +5,19 @@
       SELECT user_id, user_aiais, user_image from user
         where user_logon=#{user_logon} and user_passwd=#{user_password}
      </select>
+
+    <select id="like_count" resultType="Integer">
+        select count(id) from friend_circle_like
+        where user_id = #{user_id}
+    </select>
+
+    <select id="msg_count" resultType="Integer">
+        select count(*) from friend_circle_message
+        where user_id = #{user_id}
+    </select>
+
+    <select id="friend_count" resultType="Integer">
+        select count(user_id) from useratten
+        where atten_id = #{user_id} and status =2
+    </select>
 </mapper>

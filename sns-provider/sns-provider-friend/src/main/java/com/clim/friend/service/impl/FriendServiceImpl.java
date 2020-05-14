@@ -49,18 +49,14 @@ public class FriendServiceImpl implements FriendService {
 
         if(redisTemplate.hasKey("WSmain:"+friend_id)) {
             String isOnLine = redisTemplate.opsForValue().get("WSmain:"+friend_id);
-            logger.info("======isonlone:  "+isOnLine);
             //调用websocket 推送
             if(WsUtil.is_main(isOnLine)){
                 //推送
-                logger.info("========开始push==========");
                 int res = friendDao.add(user_id, friend_id, Code.NOADD, Code.ONLINE);
                 wsPushApi.friendPush(friend_id, "FRIEND");
-                logger.info("=========push成功=========");
                 return res;
             }
         }
-        logger.info("==============没有Push，对方不在线=============");
         int res = friendDao.add(user_id, friend_id, Code.NOADD, Code.OFFLINE);
         return res;
     }
@@ -85,13 +81,10 @@ public class FriendServiceImpl implements FriendService {
         update_friend_timeline(user_id, friend_id);
         if(redisTemplate.hasKey("WSmain:"+friend_id)) {
             String isOnLine = redisTemplate.opsForValue().get("WSmain:"+friend_id);
-            logger.info("======isonlone:  "+isOnLine);
             //调用websocket 推送
-            if(WsUtil.is_main(isOnLine)){
+            if(isOnLine!=null && WsUtil.is_main(isOnLine)){
                 //推送
-                logger.info("========开始push==========");
                 wsPushApi.friendPush(friend_id, "PERSON");
-                logger.info("=========push成功=========");
                 return res;
             }
         }
@@ -103,7 +96,7 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public int delete(String user_id, String friend_id) {
         //根据User_id搜索 List<atten_id> => 查atten_id的user   查userid attenid的last msg，查count noread
-
+        //删除好友需要把双方的timeline表都删除对方的动态
         int i= friendDao.delete(user_id, friend_id);
         if(i>0){
             List<String> list = friendDao.friend_timeline_list(user_id);
@@ -131,7 +124,7 @@ public class FriendServiceImpl implements FriendService {
             TimeLineDto timeLineDto = new TimeLineDto(friend_id,list.get(i));
             insert_list.add(timeLineDto);
         }
-        if(insert_list!=null&&insert_list.size()>0)
+        if(insert_list.size()>0)
         friendDao.insert_friend_timeline(insert_list);
     }
 

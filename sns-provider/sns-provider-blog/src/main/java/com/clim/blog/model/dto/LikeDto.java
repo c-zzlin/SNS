@@ -38,4 +38,14 @@ public class LikeDto {
     public void setFriend_id(String friend_id) {
         this.friend_id = friend_id;
     }
+
+    @Override
+    public String toString() {
+        return "LikeDto{" +
+                "is_like=" + is_like +
+                ", msg_id='" + msg_id + '\'' +
+                ", user_id='" + user_id + '\'' +
+                ", friend_id='" + friend_id + '\'' +
+                '}';
+    }
 }

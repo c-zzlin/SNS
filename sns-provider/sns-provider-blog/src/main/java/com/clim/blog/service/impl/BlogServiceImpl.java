@@ -1,15 +1,18 @@
 package com.clim.blog.service.impl;
 
 import com.clim.blog.dao.BlogDao;
+import com.clim.blog.exception.BlogException;
 import com.clim.blog.model.dto.LikeDto;
 import com.clim.blog.model.dto.MsgDto;
 import com.clim.blog.model.entity.*;
 import com.clim.blog.model.enums.LikeCode;
 import com.clim.blog.model.vo.BlogVo;
 import com.clim.blog.service.BlogService;
+import com.clim.common.enums.ErrorCodeEnum;
 import com.clim.provider.service.WsPushApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -28,6 +31,12 @@ public class BlogServiceImpl implements BlogService {
     StringRedisTemplate stringRedisTemplate;
     @Autowired
     WsPushApi wsPushApi;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    public static String TIMELINE_QUEUE = "insert_timeline_send";
+
+
     @Override
     public int insert_img(List<FriendCircleImg> list) {
        return  blogDao.insert_img(list);
@@ -54,19 +63,16 @@ public class BlogServiceImpl implements BlogService {
      * @return
      */
     public Long orderId(String prefix) {
-        logger.info("===prefix= "+prefix);
         String key = "DEMO_ORDER_ID_" + prefix;
         String orderId = null;
-        logger.info(redisTemplate.toString());
         redisTemplate.opsForValue().get("WSmain:1");
         try {
-            logger.info("======key =="+key);
             Long increment = redisTemplate.opsForValue().increment(key,1);
             //往前补6位
             orderId=prefix+String.format("%1$06d",increment);
         } catch (Exception e) {
-            System.out.println("生成订单号失败");
-            e.printStackTrace();
+            logger.warn("生成订单号失败");
+            return null;
         }
         return Long.valueOf(orderId);
     }
@@ -77,6 +83,12 @@ public class BlogServiceImpl implements BlogService {
         return String.valueOf(aLong);
     }
 
+
+    /**
+     * 发发布动态
+     * @param msgDto
+     * @return
+     */
     @Override
     public int send(MsgDto msgDto) {
         int res = blogDao.send(
@@ -84,35 +96,45 @@ public class BlogServiceImpl implements BlogService {
                 msgDto.getUser_id(),
                 msgDto.getContent()
         );
-        logger.info("===res: "+res);
         if(res>0){
-            blogDao.insert_timeline(
-                    msgDto.getMsg_id(),
-                    msgDto.getUser_id(),
-                    1
-            );
-            List<String> user_list = find_friendId(msgDto.getUser_id());
-            List<CommentId> list = new ArrayList<>();
-            for(int i=0;i<user_list.size();i++){
-                list.add(new CommentId(
-                        msgDto.getMsg_id(),
-                        user_list.get(i)
-                ));
-            }
-            if(list!=null&&list.size()>0)
-            blogDao.insert_friend_timeline(list);
-
-            for(String user_id:user_list){
-                logger.info(user_id);
-                logger.info(stringRedisTemplate.hasKey("WSmain:"+user_id).toString());
-                if(stringRedisTemplate.hasKey("WSmain:"+user_id)){
-                    logger.info("push_wsmain:"+user_id);
-                wsPushApi.friendPush(user_id,"home");
-                }
-            }
+            amqpTemplate.convertAndSend(TIMELINE_QUEUE, msgDto);
         }
         return res;
     }
+
+    /**
+     * 添加动态到好友的timeline表中，并且通知在线的好友
+     * @param msgDto
+     */
+    @Override
+    public void insert_timeline(MsgDto msgDto) {
+        blogDao.insert_timeline(
+                msgDto.getMsg_id(),
+                msgDto.getUser_id(),
+                1
+        );
+        List<String> user_list = find_friendId(msgDto.getUser_id());
+        List<CommentId> list = new ArrayList<>();
+        if(user_list == null || user_list.size() == 0){
+            return;
+        }
+        for(int i=0;i<user_list.size();i++){
+            list.add(new CommentId(
+                    msgDto.getMsg_id(),
+                    user_list.get(i)
+            ));
+        }
+        if(list.size()>0) {
+           int res = blogDao.insert_friend_timeline(list);
+        }
+        for(String user_id:user_list){
+            if(stringRedisTemplate.hasKey("WSmain:"+user_id)){
+                logger.info("好友在线，推送消息push_wsmain:"+user_id);
+                wsPushApi.friendPush(user_id,"home");
+            }
+        }
+    }
+
 
     /**
      *
@@ -129,13 +151,17 @@ public class BlogServiceImpl implements BlogService {
     public List<BlogVo> search_blog(String user_id) {
         List<String> msg_id_list = find_msgId(user_id);
         List<String> friend_id_list = find_friendId(user_id);
-        logger.info("msg_id_list:size()  :"+msg_id_list.size());
         if(msg_id_list == null || msg_id_list.size() == 0){
+            logger.info("没有动态");
             return null;
         }
+        logger.info("msg_id_list:size()，动态数量  :"+msg_id_list.size());
         List<BlogVo> blog_list = blogDao.find_blog(msg_id_list);
-        logger.info("======查完全部msg_id======");
         List<BlogLike> like_list = blogDao.find_all_like(msg_id_list);
+        if(friend_id_list == null || friend_id_list.size() == 0){
+            logger.info("没有好友,全是自己的动态不需要过滤");
+            return blog_list;
+        }
         Set<String> set=new HashSet<>(friend_id_list);
         List<CommentId> comment_list = blogDao.find_all_comment(msg_id_list);
         List<ReplyId> reply_list = blogDao.find_all_reply(msg_id_list);
@@ -206,7 +232,6 @@ public class BlogServiceImpl implements BlogService {
                 int count=0;
                 for(int k=0;k<temp.size();k++){
                     if(temp.get(k).equals(user_id)){
-                        logger.info("自己点赞"+blog_list.get(i).getMsg_id());
                         blog_list.get(i).setIs_like(1);
                         count++;
                     }else if(set.contains(temp.get(k))){
@@ -217,12 +242,6 @@ public class BlogServiceImpl implements BlogService {
                 j++;
             }
         }
-    }
-    @Override
-    public List<BlogLike> test(String user_id) {
-        List<String> msg_id_list = find_msgId(user_id);
-
-        return blogDao.find_all_like(msg_id_list);
     }
 
     @Override
@@ -237,7 +256,9 @@ public class BlogServiceImpl implements BlogService {
                             likeDto.getMsg_id(),
                             likeDto.getUser_id()
                     );
-                    if(stringRedisTemplate.hasKey("WSmain:"+likeDto.getFriend_id())){
+                    if(!likeDto.getFriend_id().equals(likeDto.getUser_id()) &&
+                            stringRedisTemplate.hasKey("WSmain:"+likeDto.getFriend_id()))
+                    {
                         wsPushApi.friendPush(
                                 likeDto.getFriend_id(),
                                 "LIKE"

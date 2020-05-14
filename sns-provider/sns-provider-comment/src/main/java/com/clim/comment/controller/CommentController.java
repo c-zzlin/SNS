@@ -8,6 +8,8 @@ import com.clim.comment.model.vo.CommentVo;
 import com.clim.comment.service.CommentService;
 import com.clim.common.model.Result;
 import com.clim.common.util.ResultUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,11 +21,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/comment")
 public class CommentController {
-
+    Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     CommentService commentService;
     @RequestMapping("/search")
     public Result<List<CommentVo>> search(@RequestBody CommentIdDto commentIdDto){
+        logger.info("查询评论，commentIdDto={}",commentIdDto);
         return ResultUtil.success(
                 commentService.list(commentIdDto)
         );
@@ -31,6 +34,7 @@ public class CommentController {
 
     @RequestMapping("/insert")
     public Result<BigInteger> insert(@RequestBody AddComDto addComDto){
+        logger.info("添加评论, addComDto={}",addComDto);
             return ResultUtil.success(
                     commentService.insert(addComDto)
             );
@@ -39,6 +43,7 @@ public class CommentController {
 
     @RequestMapping("/reply")
     public Result<BigInteger> reply(@RequestBody ReplyDto replyDto){
+        logger.info("添加回复， replyDto={}",replyDto);
         return ResultUtil.success(
                 commentService.reply(replyDto)
         );

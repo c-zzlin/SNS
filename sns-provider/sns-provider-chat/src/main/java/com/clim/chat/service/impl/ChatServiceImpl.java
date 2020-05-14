@@ -35,8 +35,11 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public List<FriendListVo> friendList(String user_id) {
-        logger.info("=========friendList======= user_id:"+user_id);
         List<String> list_id = query_friendId(user_id);            //查出所有好友的ID
+        if(list_id == null || list_id.size() == 0){
+            logger.info("用户没有好友");
+            return null;
+        }
         List<User> user_list = chatDao.query_friend_user(list_id);
         Map<String ,User> map =new HashMap<>();
         for(int i=0;i<user_list.size();i++){
@@ -53,8 +56,6 @@ public class ChatServiceImpl implements ChatService {
             res.add(friendListVo);
 
         }
-
-        logger.info("=====service结=====");
         return res;
     }
 
@@ -74,7 +75,8 @@ public class ChatServiceImpl implements ChatService {
                 sendMsgDto.getTo(),
                 sendMsgDto.getFrom()
         );
-        String key = PRE_KEY+sendMsgDto.getFrom();
+        String key = PRE_KEY+sendMsgDto.getTo();
+        logger.info("key: "+key);
         if(redisTemplate.hasKey(key)){
             wsPushMsgApi.friendPush(sendMsgDto);
             logger.info("push成功");

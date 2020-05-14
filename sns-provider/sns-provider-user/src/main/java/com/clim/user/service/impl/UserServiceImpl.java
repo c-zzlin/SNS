@@ -1,6 +1,7 @@
 package com.clim.user.service.impl;
 
 import com.clim.user.dao.UserDao;
+import com.clim.user.model.vo.NavMsg;
 import com.clim.user.model.vo.UserLoginVo;
 import com.clim.user.service.UserService;
 import com.clim.user.model.entity.User;
@@ -47,6 +48,14 @@ public class UserServiceImpl implements UserService {
         logger.info("=======退出失败======");
         return false;
 
+    }
+
+    @Override
+    public NavMsg query_navMsg(String user_id) {
+            int like = userDao.like_count(user_id);
+            int friend = userDao.friend_count(user_id);
+            int msg = userDao.msg_count(user_id);
+        return new NavMsg(like, msg, friend);
     }
 
 }

@@ -19,4 +19,12 @@ public class RecordDto {
     public void setReply_id(String reply_id) {
         this.reply_id = reply_id;
     }
+
+    @Override
+    public String toString() {
+        return "RecordDto{" +
+                "user_id='" + user_id + '\'' +
+                ", reply_id='" + reply_id + '\'' +
+                '}';
+    }
 }

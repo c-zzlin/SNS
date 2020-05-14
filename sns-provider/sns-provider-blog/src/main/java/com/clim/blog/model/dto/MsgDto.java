@@ -1,9 +1,29 @@
 package com.clim.blog.model.dto;
 
-public class MsgDto {
+import java.io.Serializable;
+
+public class MsgDto implements Serializable {
     private String msg_id;
     private String content;
     private String user_id;
+
+    @Override
+    public String toString() {
+        return "MsgDto{" +
+                "msg_id='" + msg_id + '\'' +
+                ", content='" + content + '\'' +
+                ", user_id='" + user_id + '\'' +
+                '}';
+    }
+
+    public MsgDto() {
+    }
+
+    public MsgDto(String msg_id, String content, String user_id) {
+        this.msg_id = msg_id;
+        this.content = content;
+        this.user_id = user_id;
+    }
 
     public String getMsg_id() {
         return msg_id;

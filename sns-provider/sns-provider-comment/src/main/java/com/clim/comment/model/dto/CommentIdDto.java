@@ -19,4 +19,12 @@ public class CommentIdDto {
     public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
+
+    @Override
+    public String toString() {
+        return "CommentIdDto{" +
+                "msg_id='" + msg_id + '\'' +
+                ", user_id='" + user_id + '\'' +
+                '}';
+    }
 }

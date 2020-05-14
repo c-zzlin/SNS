@@ -38,7 +38,7 @@ public class AuthFilter extends ZuulFilter {
         String token = request.getHeader(AUTH_TOKEN);
         logger.info("前端传的token是====="+token);
         String object = redisUtil.opsForValue().get(token);
-        logger.info(object);
+        logger.info("user_id={}",object);
 
 
         //token存在，删除原来的token，重新生成token返回给客户端

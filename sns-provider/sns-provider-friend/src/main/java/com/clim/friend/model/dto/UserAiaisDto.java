@@ -19,4 +19,12 @@ public class UserAiaisDto {
     public void setUser_aiais(String user_aiais) {
         this.user_aiais = user_aiais;
     }
+
+    @Override
+    public String toString() {
+        return "UserAiaisDto{" +
+                "user_aiais='" + user_aiais + '\'' +
+                ", user_id='" + user_id + '\'' +
+                '}';
+    }
 }

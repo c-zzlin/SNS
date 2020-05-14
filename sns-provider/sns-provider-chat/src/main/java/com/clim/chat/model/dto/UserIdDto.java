@@ -10,4 +10,11 @@ public class UserIdDto {
     public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
+
+    @Override
+    public String toString() {
+        return "UserIdDto{" +
+                "user_id='" + user_id + '\'' +
+                '}';
+    }
 }
