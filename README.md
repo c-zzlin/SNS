@@ -1,6 +1,6 @@
 # SNS为社交网站后端项目，前端项目（效果展示）传送门https://github.com/c-zzlin/SNS_Front
 
-Ps:该项目为本人毕设项目
+Ps:该项目为本人毕设项目,基于springcloud(zuul、eureka、feign、hystrix等组件)、mybatis、redis、rabbitmq、elk等等
 
 
 
